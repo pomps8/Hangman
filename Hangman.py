@@ -130,6 +130,5 @@ class Hangman:
         file = open("wordsList.txt", "r")
         list_of_words = file.readlines()
         self.phrase = random.choice(list_of_words).rstrip()
-        print("Phrase is: \"" + self.phrase + "\"")
         file.close()
 
