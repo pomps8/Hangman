@@ -37,7 +37,7 @@ class Hangman:
     # Description: Start game will initialize the hangmanGui and print the game ui
     def start_game(self):
         hangman_ui = HangmanGui(self.phrase, self.max_amount_wrong)
-        hangman_ui.print_game_ui(self.__current_amount_wrong)
+        hangman_ui.print_game_ui(self.__current_amount_wrong, self.correct_letters_guessed, self.letters_guessed)
 
         # Check to see if they can keep guessing.
         # This acts as a game loop for the hangman game
@@ -47,7 +47,7 @@ class Hangman:
                 self.letter_contained_in_word(user_input)
             else:
                 print("Bad input, please try again.")
-            hangman_ui.print_game_ui(self.__current_amount_wrong)
+            hangman_ui.print_game_ui(self.__current_amount_wrong, self.correct_letters_guessed, self.letters_guessed)
 
 
     def check_input(self, user_input):
@@ -61,13 +61,16 @@ class Hangman:
         # if the character has not been guess and it is in the word
         if not user_input.lower() in self.letters_guessed and user_input.lower() in self.phrase.lower():
             print("Its in there and has not been guessed")
-            self.correct_letters_guessed.append(user_input)
-            self.letters_guessed.append(user_input)
+            print("\n \n \n \n \n \n")
+            self.correct_letters_guessed.append(user_input.lower())
+            self.letters_guessed.append(user_input.lower())
         # if the character has been guessed already
         elif user_input.lower() in self.letters_guessed:
             print("Letter has been guessed already")
+            print("\n \n \n \n \n \n")
         # any other case, the character is not in the word
         else:
             print("Its not in there")
-            self.letters_guessed.append(user_input)
+            print("\n \n \n \n \n \n")
+            self.letters_guessed.append(user_input.lower())
             self.__current_amount_wrong += 1
