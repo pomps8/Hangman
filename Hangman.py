@@ -36,3 +36,19 @@ class Hangman:
     def start_game(self):
         hangman_ui = HangmanGui(self.phrase)
         hangman_ui.print_game_ui()
+
+        # Check to see if they can keep guessing
+        while self.__current_amount_wrong != self.max_amount_wrong:
+            user_input = input("Enter 1 character: ")
+            if self.check_input(user_input):
+                print("Good")
+            else:
+                print("Bad input, please try again.")
+
+
+    def check_input(self, user_input):
+        # if input is not a single char, return false, otherwise return true
+        # TODO: Better error handling here if they enter a non-ASCII character.
+        if len(user_input) == 0 or len(user_input) > 1 or user_input == " ":
+            return False
+        return True
