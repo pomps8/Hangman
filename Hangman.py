@@ -13,12 +13,7 @@ class Hangman:
     # In every game, the user will have a total of 6 guesses before the game will end and they lose.
     max_amount_wrong = 6
 
-    # The word for the player to guess
-    # TODO: Make this more dynamic by adding a text file with more words / phrases to pick from.
-    phrase = "The word to guess"
 
-    # UI for game
-    hangman_ui = None
 
     # Function Name: init
     # Parameters: NONE
@@ -27,6 +22,13 @@ class Hangman:
     def __init__(self):
         # Int to keep track of incorrect input by user
         self.__current_amount_wrong = 0
+        self.letters_guessed = []
+        self.correct_letters_guessed = []
+        # The word for the player to guess
+        # TODO: Make this more dynamic by adding a text file with more words / phrases to pick from.
+        self.phrase = "The word to guess"
+        # UI for game
+        self.hangman_ui = None
         self.start_game()
 
     # Function Name: start_game
@@ -34,16 +36,18 @@ class Hangman:
     # Return type: NONE
     # Description: Start game will initialize the hangmanGui and print the game ui
     def start_game(self):
-        hangman_ui = HangmanGui(self.phrase)
-        hangman_ui.print_game_ui()
+        hangman_ui = HangmanGui(self.phrase, self.max_amount_wrong)
+        hangman_ui.print_game_ui(self.__current_amount_wrong)
 
-        # Check to see if they can keep guessing
+        # Check to see if they can keep guessing.
+        # This acts as a game loop for the hangman game
         while self.__current_amount_wrong != self.max_amount_wrong:
             user_input = input("Enter 1 character: ")
             if self.check_input(user_input):
-                print("Good")
+                self.letter_contained_in_word(user_input)
             else:
                 print("Bad input, please try again.")
+            hangman_ui.print_game_ui(self.__current_amount_wrong)
 
 
     def check_input(self, user_input):
@@ -52,3 +56,18 @@ class Hangman:
         if len(user_input) == 0 or len(user_input) > 1 or user_input == " ":
             return False
         return True
+
+    def letter_contained_in_word(self, user_input):
+        # if the character has not been guess and it is in the word
+        if not user_input.lower() in self.letters_guessed and user_input.lower() in self.phrase.lower():
+            print("Its in there and has not been guessed")
+            self.correct_letters_guessed.append(user_input)
+            self.letters_guessed.append(user_input)
+        # if the character has been guessed already
+        elif user_input.lower() in self.letters_guessed:
+            print("Letter has been guessed already")
+        # any other case, the character is not in the word
+        else:
+            print("Its not in there")
+            self.letters_guessed.append(user_input)
+            self.__current_amount_wrong += 1

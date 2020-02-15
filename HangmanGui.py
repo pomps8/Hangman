@@ -4,16 +4,24 @@
 
 
 class HangmanGui:
+    # Default characters for player
+    head_character = "O"
+    torso_character = "|"
+    right_arm_character = "\\"
+    right_leg_character = "\\"
+    left_arm_character = "/"
+    left_leg_character = "/"
 
     # Function Name: init
     # Parameters: word_to_guess
     # Return type: HangmanGui object
     # Description: Takes in the word to guess and generates the "blank" word, which is the word / phrase with
     # underscores as the characters to keep the user from knowing exactly what the word is.
-    def __init__(self, word_to_guess):
+    def __init__(self, word_to_guess, max_amount_wrong):
         print("Game starting... \n \n \n")
         self.word_to_guess = word_to_guess
         self.word_with_blanks = ""
+        self.max_amount_wrong = max_amount_wrong
 
     # Function Name: print_game_ui
     # Parameters: NONE
@@ -21,7 +29,9 @@ class HangmanGui:
     # Description: Prints the game board ui to the screen for the user to see. This consists of the
     # current amount of incorrect submissions and the phrase with the letters illuminated that they
     # have guessed thus far.
-    def print_game_ui(self):
+    def print_game_ui(self, number_of_incorrect_guesses):
+        print("Number of incorrect guesses: " + str(number_of_incorrect_guesses) + " out of " +
+              str(self.max_amount_wrong))
         print("The word to guess is " + self.get_blank_word(self.word_to_guess))
 
     # Function Name: get_blank_word
