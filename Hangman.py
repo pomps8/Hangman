@@ -13,8 +13,6 @@ class Hangman:
     # In every game, the user will have a total of 6 guesses before the game will end and they lose.
     max_amount_wrong = 6
 
-
-
     # Function Name: init
     # Parameters: NONE
     # Return type: Hangman object
@@ -49,7 +47,10 @@ class Hangman:
                 print("Bad input, please try again.")
             hangman_ui.print_game_ui(self.__current_amount_wrong, self.correct_letters_guessed, self.letters_guessed)
 
-
+    # Function Name: check_input
+    # Parameters: user_input
+    # Return type: Boolean
+    # Description: This is a validation method to make sure the input is correct ( correct is a - z and A - Z ).
     def check_input(self, user_input):
         # if input is not a single char, return false, otherwise return true
         # TODO: Better error handling here if they enter a non-ASCII character.
@@ -57,6 +58,13 @@ class Hangman:
             return False
         return True
 
+    # Function Name: letter_contained_in_word
+    # Parameters: user_input
+    # Return type: Boolean
+    # Description: This method checks if the input has been guessed, if it's in the phrase to guess, or if it has not
+    # been guessed. If it is in the word, it is added to both the correct_letters_guessed list and the letters_guessed
+    # list. If it has already been guessed, feedback is given to the user. If the character is not in the phrase and has
+    # not been guessed, it results in an incorrect guess.
     def letter_contained_in_word(self, user_input):
         # if the character has not been guess and it is in the word
         if not user_input.lower() in self.letters_guessed and user_input.lower() in self.phrase.lower():

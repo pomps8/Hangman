@@ -1,7 +1,10 @@
 # FileName: HangmanGui.py
 # Author: Anthony Pompili
 # Date: February 14, 2020
-
+# Description: This is the GUI interface for the game. Everytime the player guesses, the word is passed to this class,
+# along with a list of the correct letters guessed. Only the correct letters that are guessed are illumincated for
+# the player, the rest are shown with under scores ( _ ). Additionally, the current amount of incorrect guesses as well
+# as the letters guessed thus far are shown for the user.
 
 class HangmanGui:
     # Default characters for player
@@ -39,8 +42,9 @@ class HangmanGui:
     # Function Name: get_blank_word
     # Parameters: word_to_guess
     # Return type: String
-    # Description: Take the word / phrase passed in, and will add underscores for all characters,
-    # and add 3 blank spaces for a regular space.
+    # Description: Take the word / phrase passed in, and will add underscores for all characters that are not in the
+    # correct_letters_guessed list. If the letter has been guessed, then it is shown to the user. Else, it is
+    # shown as a n underscore. Additionally, 3 blank spaces appear for a regular space.
     def get_blank_word(self, word_to_guess, correct_letters_guessed):
         blanked_out_word = ""
 
