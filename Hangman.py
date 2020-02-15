@@ -1,6 +1,7 @@
 # Imports
 from HangmanGui import HangmanGui
 import re
+import random
 
 # FileName: Hangman.py
 # Author: Anthony Pompili
@@ -30,9 +31,8 @@ class Hangman:
         self.correct_letters_guessed = set()
         # A unique set of off the individual letters in the
         self.answer_set = set()
-        # The word for the player to guess
-        # TODO: Make this more dynamic by adding a text file with more words / phrases to pick from.
-        self.phrase = "The word to guess"
+        # The word for the player to guess, this word will be chosen from a file.
+        self.phrase = ""
         # UI for game. This prints the list of the characters guessed, amount of wrong answers,
         # and the word / phrase the user has to guess.
         self.hangman_ui = None
@@ -44,6 +44,8 @@ class Hangman:
     # Return type: NONE
     # Description: Start game will initialize the hangmanGui and print the game ui
     def start_game(self):
+        # Choose a phrase / word from external file
+        self.random_phrase_selector()
         # Put all unique characters in the answer set so we know once all these
         # letters are guessed, the game is over.
         self.initialize_answer_set(self.phrase)
@@ -74,10 +76,10 @@ class Hangman:
 
         if self.__current_amount_wrong == self.max_amount_wrong:
             print("You lost! The phrase was: " + self.phrase)
-        elif self.__current_amount_wrong < self.max_amount_wrong:
-            print("Game quit.")
-        else:
+        elif self.__current_amount_wrong < self.max_amount_wrong and len(self.correct_letters_guessed) == len(self.answer_set):
             print("You win!")
+        else:
+            print("Game quit.")
 
     # Function Name: check_input
     # Parameters: user_input
@@ -123,4 +125,11 @@ class Hangman:
         for char in self.phrase:
             if char != " ":
                 self.answer_set.add(char.lower())
+
+    def random_phrase_selector(self):
+        file = open("wordsList.txt", "r")
+        list_of_words = file.readlines()
+        self.phrase = random.choice(list_of_words).rstrip()
+        print("Phrase is: \"" + self.phrase + "\"")
+        file.close()
 
