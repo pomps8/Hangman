@@ -1,5 +1,6 @@
 # Imports
 from HangmanGui import HangmanGui
+import re
 
 # FileName: Hangman.py
 # Author: Anthony Pompili
@@ -9,9 +10,12 @@ from HangmanGui import HangmanGui
 # amount of tries before they "lose". If they guess the world before running out of amount of tries, then
 # they will win!
 
+
 class Hangman:
     # In every game, the user will have a total of 6 guesses before the game will end and they lose.
     max_amount_wrong = 6
+    # Regular expression to check if char is between A - Z and a - z
+    pattern = re.compile("[A-Za-z]")
 
     # Function Name: init
     # Parameters: NONE
@@ -20,13 +24,19 @@ class Hangman:
     def __init__(self):
         # Int to keep track of incorrect input by user
         self.__current_amount_wrong = 0
-        self.letters_guessed = []
-        self.correct_letters_guessed = []
+        # A unique set of all the letters guessed
+        self.letters_guessed = set()
+        # A unique set of all the correct letters
+        self.correct_letters_guessed = set()
+        # A unique set of off the individual letters in the
+        self.answer_set = set()
         # The word for the player to guess
         # TODO: Make this more dynamic by adding a text file with more words / phrases to pick from.
         self.phrase = "The word to guess"
-        # UI for game
+        # UI for game. This prints the list of the characters guessed, amount of wrong answers,
+        # and the word / phrase the user has to guess.
         self.hangman_ui = None
+        # Start the game
         self.start_game()
 
     # Function Name: start_game
@@ -34,29 +44,50 @@ class Hangman:
     # Return type: NONE
     # Description: Start game will initialize the hangmanGui and print the game ui
     def start_game(self):
+        # Put all unique characters in the answer set so we know once all these
+        # letters are guessed, the game is over.
+        self.initialize_answer_set(self.phrase)
+        # Set up the game UI
         hangman_ui = HangmanGui(self.phrase, self.max_amount_wrong)
+        # Print the first instance of the game board
         hangman_ui.print_game_ui(self.__current_amount_wrong, self.correct_letters_guessed, self.letters_guessed)
 
         # Check to see if they can keep guessing.
         # This acts as a game loop for the hangman game
-        while self.__current_amount_wrong != self.max_amount_wrong:
-            user_input = input("Enter 1 character: ")
-            if self.check_input(user_input):
+        # The user cannot have used all their incorrect guesses or must submit all the
+        # characters in the word to be done with the game.
+        while self.__current_amount_wrong != self.max_amount_wrong and \
+                len(self.answer_set) != len(self.correct_letters_guessed):
+
+            user_input = input("Enter 1 character (Type \"quit\" to exit game): ")
+            # If the user types quit, the game ends.
+            if user_input.lower() == "quit":
+                break
+            # Checks if the input given is valid, if it is, then it is check with
+            # the phrase to see if it is a viable solution.
+            elif self.check_input(user_input):
                 self.letter_contained_in_word(user_input)
+            # Bad input, user needs to try again.
             else:
                 print("Bad input, please try again.")
             hangman_ui.print_game_ui(self.__current_amount_wrong, self.correct_letters_guessed, self.letters_guessed)
+
+        if self.__current_amount_wrong == self.max_amount_wrong:
+            print("You lost! The phrase was: " + self.phrase)
+        elif self.__current_amount_wrong < self.max_amount_wrong:
+            print("Game quit.")
+        else:
+            print("You win!")
 
     # Function Name: check_input
     # Parameters: user_input
     # Return type: Boolean
     # Description: This is a validation method to make sure the input is correct ( correct is a - z and A - Z ).
     def check_input(self, user_input):
-        # if input is not a single char, return false, otherwise return true
-        # TODO: Better error handling here if they enter a non-ASCII character.
+        # if input is not a single char that is acceptable, return false, otherwise return true
         if len(user_input) == 0 or len(user_input) > 1 or user_input == " ":
             return False
-        return True
+        return self.pattern.fullmatch(user_input) is not None
 
     # Function Name: letter_contained_in_word
     # Parameters: user_input
@@ -70,8 +101,8 @@ class Hangman:
         if not user_input.lower() in self.letters_guessed and user_input.lower() in self.phrase.lower():
             print("Its in there and has not been guessed")
             print("\n \n \n \n \n \n")
-            self.correct_letters_guessed.append(user_input.lower())
-            self.letters_guessed.append(user_input.lower())
+            self.correct_letters_guessed.add(user_input.lower())
+            self.letters_guessed.add(user_input.lower())
         # if the character has been guessed already
         elif user_input.lower() in self.letters_guessed:
             print("Letter has been guessed already")
@@ -80,5 +111,16 @@ class Hangman:
         else:
             print("Its not in there")
             print("\n \n \n \n \n \n")
-            self.letters_guessed.append(user_input.lower())
+            self.letters_guessed.add(user_input.lower())
             self.__current_amount_wrong += 1
+
+    # Function Name: initialize_answer_set
+    # Parameters: phrase
+    # Return type: NONE
+    # Description: This method initializes the answer set which holds all the unique characters from the
+    # phrase the user needs to guess.
+    def initialize_answer_set(self, phrase):
+        for char in self.phrase:
+            if char != " ":
+                self.answer_set.add(char.lower())
+
